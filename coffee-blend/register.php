@@ -1,4 +1,39 @@
 <?php include "header/nav.php" ?>
+<?php include "config/config.php" ?>
+
+
+<?php
+
+
+	if(isset($_POST['submit'])){
+
+		$username = $_POST['username'];
+		$email = $_POST['email'];
+		$password = $_POST['password'];
+
+		$hash_password = password_hash($password, PASSWORD_BCRYPT);
+
+		// echo "<script>alert('hello')</script>";
+
+		$register_user_query = "INSERT INTO `register_user`(`user_name`, `user_email`, `user_password`) VALUES 			(:username, :email, :password)";
+
+		$register_user_query_prepare = $connection->prepare($register_user_query);
+		$register_user_query_prepare->bindParam(':username',$username);
+		$register_user_query_prepare->bindParam(':email',$email);
+		$register_user_query_prepare->bindParam(':password',$hash_password);
+
+		$register_user_query_prepare->execute();
+
+
+	}
+
+
+
+
+?>
+
+
+
 
 
     <section class="home-slider owl-carousel">
@@ -22,33 +57,33 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 ftco-animate">
-			<form action="#" class="billing-form ftco-bg-dark p-3 p-md-5">
+			<form action="<?php $_SERVER['PHP_SELF'] ?>" method="post" class="billing-form ftco-bg-dark p-3 p-md-5">
 				<h3 class="mb-4 billing-heading">Register</h3>
 	          	<div class="row align-items-end">
                  <div class="col-md-12">
                         <div class="form-group">
                             <label for="Username">Username</label>
-                          <input type="text" class="form-control" placeholder="Username">
+                          <input type="text" name="username" class="form-control" placeholder="Username">
                         </div>
                  </div>
 	          	  <div class="col-md-12">
 	                <div class="form-group">
 	                	<label for="Email">Email</label>
-	                  <input type="text" class="form-control" placeholder="Email">
+	                  <input type="text" name="email" class="form-control" placeholder="Email">
 	                </div>
 	              </div>
                  
 	              <div class="col-md-12">
 	                <div class="form-group">
 	                	<label for="Password">Password</label>
-	                    <input type="password" class="form-control" placeholder="Password">
+	                    <input type="password" name="password" class="form-control" placeholder="Password">
 	                </div>
 
                 </div>
                 <div class="col-md-12">
                 	<div class="form-group mt-4">
 							<div class="radio">
-                                <button class="btn btn-primary py-3 px-4">Register</button>
+                                <button type="submit" name="submit" class="btn btn-primary py-3 px-4">Register</button>
 						    </div>
 					</div>
                 </div>
