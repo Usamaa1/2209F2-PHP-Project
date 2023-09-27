@@ -19,24 +19,56 @@
 
 
 
-	if(isset($_POST['submit'])){
+	if(isset($_POST['submit']))
+	{
 
 		$username = $_POST['username'];
 		$email = $_POST['email'];
 		$password = $_POST['password'];
 
-		$hash_password = password_hash($password, PASSWORD_BCRYPT);
 
-		// echo "<script>alert('hello')</script>";
 
-		$register_user_query = "INSERT INTO `register_user`(`user_name`, `user_email`, `user_password`) VALUES 			(:username, :email, :password)";
 
-		$register_user_query_prepare = $connection->prepare($register_user_query);
-		$register_user_query_prepare->bindParam(':username',$username);
-		$register_user_query_prepare->bindParam(':email',$email);
-		$register_user_query_prepare->bindParam(':password',$hash_password);
+		$isEmailNotExist = false;
 
-		$register_user_query_prepare->execute();
+
+
+		if(empty($username) || empty($email) || empty($password))
+		{
+			echo "<script>alert('Kindly fill all the fields')</script>";
+		}
+		else
+		{
+			
+		foreach($registered_user_data as $user)
+		{
+			if($email === $user['user_email'])
+			{
+				echo "<script>alert('Your email is already in use')</script>";
+				return;
+			}
+			else
+			{
+				$isEmailNotExist = true;
+			}
+		}
+
+		if($isEmailNotExist)
+		{
+			$hash_password = password_hash($password, PASSWORD_BCRYPT);
+
+			// echo "<script>alert('hello')</script>";
+	
+			$register_user_query = "INSERT INTO `register_user`(`user_name`, `user_email`, `user_password`) VALUES 			(:username, :email, :password)";
+	
+			$register_user_query_prepare = $connection->prepare($register_user_query);
+			$register_user_query_prepare->bindParam(':username',$username);
+			$register_user_query_prepare->bindParam(':email',$email);
+			$register_user_query_prepare->bindParam(':password',$hash_password);
+	
+			$register_user_query_prepare->execute();
+		}
+		}
 
 
 	}
