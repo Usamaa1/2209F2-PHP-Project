@@ -5,6 +5,20 @@
 <?php
 
 
+
+	$fetch_regitered_user = "SELECT * FROM `register_user`";
+
+	$fetch_regitered_prepare = $connection->prepare($fetch_regitered_user);
+	$fetch_regitered_prepare->execute();
+	$registered_user_data = $fetch_regitered_prepare->fetchAll(PDO::FETCH_ASSOC);
+
+	print_r($registered_user_data);
+
+
+
+
+
+
 	if(isset($_POST['submit'])){
 
 		$username = $_POST['username'];
