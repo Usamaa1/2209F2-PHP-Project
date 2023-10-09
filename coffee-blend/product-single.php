@@ -1,4 +1,39 @@
 <?php include "header/nav.php" ?>
+<?php include "config/config.php" ?>
+
+<?php 
+
+	// FOR SINGLE PRODUCTS
+	$prodId = $_GET['prodId'];
+
+	$single_product_query = "SELECT * FROM `products` WHERE prod_id = :prodId";
+	$single_product_prepare = $connection->prepare($single_product_query);
+	$single_product_prepare->bindParam(':prodId',$prodId);
+	$single_product_prepare->execute();
+
+	$single_product = $single_product_prepare->fetch(PDO::FETCH_ASSOC);
+
+	print_r($single_product);
+
+
+
+	// FOR RELATED PRODUCTS
+
+	$related_products_query = "SELECT * FROM `products` WHERE prod_id != :prodId and prod_categories = 				:category";
+	$related_products_prepare = $connection->prepare($related_products_query);
+	$related_products_prepare->bindParam(':prodId',$prodId);
+	$related_products_prepare->bindParam(':category',$single_product['prod_categories']);
+	$related_products_prepare->execute();
+
+	$related_products = $related_products_prepare->fetchAll(PDO::FETCH_ASSOC);
+
+	print_r($related_products);
+
+
+
+
+
+?>
 
 
     <section class="home-slider owl-carousel">
@@ -22,24 +57,23 @@
     	<div class="container">
     		<div class="row">
     			<div class="col-lg-6 mb-5 ftco-animate">
-    				<a href="images/menu-2.jpg" class="image-popup"><img src="images/menu-2.jpg" class="img-fluid" alt="Colorlib Template"></a>
+    				<a href="images/menu-2.jpg" class="image-popup"><img src="images/<?php echo $single_product['prod_image'] ?>" class="img-fluid" alt="Colorlib Template"></a>
     			</div>
     			<div class="col-lg-6 product-details pl-md-5 ftco-animate">
-    				<h3>Creamy Latte Coffee</h3>
-    				<p class="price"><span>$4.90</span></p>
-    				<p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
-    				<p>On her way she met a copy. The copy warned the Little Blind Text, that where it came from it would have been rewritten a thousand times and everything that was left from its origin would be the word "and" and the Little Blind Text should turn around and return to its own, safe country. But nothing the copy said could convince her and so it didn’t take long until a few insidious Copy Writers ambushed her, made her drunk with Longe and Parole and dragged her into their agency, where they abused her for their.
-						</p>
+    				<h3><?php echo $single_product['prod_name'] ?></h3>
+    				<p class="price"><span>$<?php echo $single_product['prod_price'] ?></span></p>
+    				<p><?php echo $single_product['prod_description'] ?></p>
+    				
 						<div class="row mt-4">
 							<div class="col-md-6">
 								<div class="form-group d-flex">
 		              <div class="select-wrap">
 	                  <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-	                  <select name="" id="" class="form-control">
-	                  	<option value="">Small</option>
-	                    <option value="">Medium</option>
-	                    <option value="">Large</option>
-	                    <option value="">Extra Large</option>
+	                  <select name="" id="size" class="form-control">
+	                  	<option value="Small">Small</option>
+	                    <option value="Medium">Medium</option>
+	                    <option value="Large">Large</option>
+	                    <option value="eLarge">Extra Large</option>
 	                  </select>
 	                </div>
 		            </div>
@@ -75,50 +109,26 @@
           </div>
         </div>
         <div class="row">
-        	<div class="col-md-3">
+   
+		<?php foreach($related_products as $product){ ?>
+			
+			<div class="col-md-3">
         		<div class="menu-entry">
-    					<a href="#" class="img" style="background-image: url(images/menu-1.jpg);"></a>
+    					<a href="#" class="img" style="background-image: url(images/<?php echo $product['prod_image'] ?>);"></a>
     					<div class="text text-center pt-4">
-    						<h3><a href="#">Coffee Capuccino</a></h3>
-    						<p>A small river named Duden flows by their place and supplies</p>
-    						<p class="price"><span>$5.90</span></p>
-    						<p><a href="#" class="btn btn-primary btn-outline-primary">Add to Cart</a></p>
+    						<h3><a href="#"><?php echo $product['prod_name'] ?></a></h3>
+    						<p><?php echo $product['prod_description'] ?></p>
+    						<p class="price"><span>$<?php echo $product['prod_price'] ?></span></p>
+    						<p><a href="product-single.php?prodId=<?php echo $product['prod_id'] ?>" class="btn btn-primary btn-outline-primary">Show</a></p>
     					</div>
     				</div>
         	</div>
-        	<div class="col-md-3">
-        		<div class="menu-entry">
-    					<a href="#" class="img" style="background-image: url(images/menu-2.jpg);"></a>
-    					<div class="text text-center pt-4">
-    						<h3><a href="#">Coffee Capuccino</a></h3>
-    						<p>A small river named Duden flows by their place and supplies</p>
-    						<p class="price"><span>$5.90</span></p>
-    						<p><a href="#" class="btn btn-primary btn-outline-primary">Add to Cart</a></p>
-    					</div>
-    				</div>
-        	</div>
-        	<div class="col-md-3">
-        		<div class="menu-entry">
-    					<a href="#" class="img" style="background-image: url(images/menu-3.jpg);"></a>
-    					<div class="text text-center pt-4">
-    						<h3><a href="#">Coffee Capuccino</a></h3>
-    						<p>A small river named Duden flows by their place and supplies</p>
-    						<p class="price"><span>$5.90</span></p>
-    						<p><a href="#" class="btn btn-primary btn-outline-primary">Add to Cart</a></p>
-    					</div>
-    				</div>
-        	</div>
-        	<div class="col-md-3">
-        		<div class="menu-entry">
-    					<a href="#" class="img" style="background-image: url(images/menu-4.jpg);"></a>
-    					<div class="text text-center pt-4">
-    						<h3><a href="#">Coffee Capuccino</a></h3>
-    						<p>A small river named Duden flows by their place and supplies</p>
-    						<p class="price"><span>$5.90</span></p>
-    						<p><a href="#" class="btn btn-primary btn-outline-primary">Add to Cart</a></p>
-    					</div>
-    				</div>
-        	</div>
+
+			<?php } ?>
+
+
+
+
         </div>
     	</div>
     </section>
@@ -161,6 +171,28 @@
 		    });
 		    
 		});
+
+
+
+
+		const size = document.getElementById('size');
+
+		size.addEventListener('change',()=>{
+			console.log(size.value);
+		})
+
+
+
+
+
+
+
+
+
+
+
+
+
 	</script>
 
     
